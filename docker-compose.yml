@@ -26,10 +26,7 @@ services:
       - .env
 
     command: python etl/download_products.py
-
-volumes:
-  postgres_data:
-  
+ 
   app:
     build: .
     container_name: products_dashboard
@@ -44,3 +41,6 @@ volumes:
       - "8502:8501"
 
     command: streamlit run app/app.py --server.address=0.0.0.0
+
+volumes:
+  postgres_data:
