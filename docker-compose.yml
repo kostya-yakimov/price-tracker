@@ -15,5 +15,17 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
 
+  etl:
+    build: .
+    container_name: products_etl
+
+    depends_on:
+      - db
+
+    env_file:
+      - .env
+
+    command: python etl/download_products.py
+
 volumes:
   postgres_data:
