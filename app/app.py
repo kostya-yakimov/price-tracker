@@ -2,6 +2,7 @@ import os
 import streamlit as st
 import pandas as pd
 import psycopg2
+import altair as alt
 
 st.set_page_config(
     page_title="Product Price Tracker",
@@ -72,14 +73,30 @@ selected_product = st.selectbox(
     product_list
 )
 
-product_df = df[df["title"] == selected_product]
+product_df = df[df["title"] == selected_product].copy()
 
-chart_df = (
-    product_df[["loaded_at", "price"]]
-    .sort_values("loaded_at")
-    .set_index("loaded_at")
+# Преобразуем дату
+product_df["loaded_at"] = pd.to_datetime(product_df["loaded_at"])
+
+# Сортировка
+product_df = product_df.sort_values("loaded_at")
+
+# График Altair
+chart = alt.Chart(product_df).mark_line(point=True).encode(
+    x=alt.X(
+        "loaded_at:T",
+        title="Time"
+    ),
+    y=alt.Y(
+        "price:Q",
+        title="Price"
+    ),
+    tooltip=["loaded_at:T", "price:Q"]
+).properties(
+    width=900,
+    height=400
 )
 
-st.line_chart(chart_df)
+st.altair_chart(chart, use_container_width=True)
 
 conn.close()
