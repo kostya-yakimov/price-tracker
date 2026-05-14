@@ -2,6 +2,7 @@ import os
 import streamlit as st
 import pandas as pd
 import psycopg2
+import altair as alt
 
 st.set_page_config(
     page_title="Product Price Tracker",
