@@ -1,4 +1,6 @@
 import os
+import time
+import random
 import requests
 import psycopg2
 
@@ -13,30 +15,40 @@ conn = psycopg2.connect(
 
 cur = conn.cursor()
 
-# --- Получение данных из API ---
-response = requests.get("https://dummyjson.com/products")
-products = response.json()["products"]
+while True:
+    print("Loading products...")
 
-# --- Загрузка данных в БД ---
-for product in products:
-    cur.execute("""
-        INSERT INTO product_prices (
-            product_id,
-            title,
-            category,
-            price
+    # --- Получение данных ---
+    response = requests.get("https://dummyjson.com/products")
+    products = response.json()["products"]
+
+    # --- Загрузка в БД ---
+    for product in products:
+
+        # Небольшое случайное изменение цены
+        modified_price = round(
+            product["price"] * random.uniform(0.95, 1.05),
+            2
         )
-        VALUES (%s, %s, %s, %s)
-    """, (
-        product["id"],
-        product["title"],
-        product["category"],
-        product["price"]
-    ))
 
-conn.commit()
+        cur.execute("""
+            INSERT INTO product_prices (
+                product_id,
+                title,
+                category,
+                price
+            )
+            VALUES (%s, %s, %s, %s)
+        """, (
+            product["id"],
+            product["title"],
+            product["category"],
+            modified_price
+        ))
 
-cur.close()
-conn.close()
+    conn.commit()
 
-print(f"Loaded {len(products)} products")
+    print(f"Loaded {len(products)} products")
+
+    # --- Ждем 30 минут ---
+    time.sleep(1800)
