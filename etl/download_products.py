@@ -5,13 +5,25 @@ import requests
 import psycopg2
 
 # --- Подключение к PostgreSQL ---
-conn = psycopg2.connect(
-    dbname=os.getenv("POSTGRES_DB"),
-    user=os.getenv("POSTGRES_USER"),
-    password=os.getenv("POSTGRES_PASSWORD"),
-    host="db",
-    port="5432"
-)
+import time
+
+while True:
+    try:
+        conn = psycopg2.connect(
+            dbname=os.getenv("POSTGRES_DB"),
+            user=os.getenv("POSTGRES_USER"),
+            password=os.getenv("POSTGRES_PASSWORD"),
+            host="db",
+            port="5432"
+        )
+
+        print("Connected to PostgreSQL")
+        break
+
+    except Exception as e:
+        print("Waiting for PostgreSQL...")
+        print(e)
+        time.sleep(5)
 
 cur = conn.cursor()
 
