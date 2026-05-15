@@ -63,4 +63,4 @@ while True:
     print(f"Loaded {len(products)} products")
 
     # --- Ждем 30 минут ---
-    time.sleep(1800)
+    time.sleep(30)
