@@ -83,3 +83,5 @@ chart_df = (
 st.line_chart(chart_df)
 
 conn.close()
+
+conn.close()
