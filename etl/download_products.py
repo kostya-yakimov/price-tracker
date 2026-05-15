@@ -60,6 +60,24 @@ while True:
 
     conn.commit()
 
+    cur.execute("""
+    DELETE FROM product_prices
+    WHERE id IN (
+        SELECT id
+        FROM (
+            SELECT id,
+                   ROW_NUMBER() OVER (
+                       PARTITION BY product_id
+                       ORDER BY loaded_at DESC
+                   ) AS rn
+            FROM product_prices
+        ) t
+        WHERE rn > 100
+    )
+    """)
+
+    conn.commit()
+
     print(f"Loaded {len(products)} products")
 
     # --- Ждем 30 минут ---
