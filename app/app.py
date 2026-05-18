@@ -25,7 +25,8 @@ while True:
         break
 
     except Exception as e:
-        st.warning("Waiting for PostgreSQL...")
+        print("Waiting for PostgreSQL...")
+        print(e)
         time.sleep(5)
 
 # --- Загрузка данных ---
