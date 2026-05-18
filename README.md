@@ -77,21 +77,21 @@ restart policy (restart: always)
 
 http://46.149.77.76:8502
 📁 Структура проекта
-price-tracker/
-│
-├── app/
-│   └── app.py
-│
-├── etl/
-│   └── download_products.py
-│
-├── sql/
-│   └── init.sql
-│
-├── docker-compose.yml
-├── Dockerfile
-├── requirements.txt
-└── .env
+price-tracker/   
+│   
+├── app/   
+│   └── app.py   
+│   
+├── etl/   
+│   └── download_products.py   
+│   
+├── sql/   
+│   └── init.sql   
+│   
+├── docker-compose.yml   
+├── Dockerfile   
+├── requirements.txt   
+└── .env   
 🚀 Чему посвящен проект
 
 Проект демонстрирует:
