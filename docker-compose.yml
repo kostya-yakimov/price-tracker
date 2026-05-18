@@ -15,12 +15,19 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
 
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   etl:
     build: .
     container_name: products_etl
 
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
     env_file:
       - .env
@@ -32,7 +39,8 @@ services:
     container_name: products_dashboard
 
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
     env_file:
       - .env
