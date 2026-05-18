@@ -13,7 +13,7 @@ while True:
             dbname=os.getenv("POSTGRES_DB"),
             user=os.getenv("POSTGRES_USER"),
             password=os.getenv("POSTGRES_PASSWORD"),
-            host="db",
+            host=os.getenv("DB_HOST", "db"),
             port="5432"
         )
 
