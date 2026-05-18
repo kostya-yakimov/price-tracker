@@ -2,6 +2,7 @@ import os
 import streamlit as st
 import pandas as pd
 import psycopg2
+import time
 
 st.set_page_config(
     page_title="Product Price Tracker",
@@ -11,13 +12,21 @@ st.set_page_config(
 st.title("🛒 Product Price Tracker")
 
 # --- Подключение к БД ---
-conn = psycopg2.connect(
-    dbname=os.getenv("POSTGRES_DB"),
-    user=os.getenv("POSTGRES_USER"),
-    password=os.getenv("POSTGRES_PASSWORD"),
-    host="db",
-    port="5432"
-)
+while True:
+    try:
+        conn = psycopg2.connect(
+            dbname=os.getenv("POSTGRES_DB"),
+            user=os.getenv("POSTGRES_USER"),
+            password=os.getenv("POSTGRES_PASSWORD"),
+            host="db",
+            port="5432"
+        )
+
+        break
+
+    except Exception as e:
+        st.warning("Waiting for PostgreSQL...")
+        time.sleep(5)
 
 # --- Загрузка данных ---
 query = """
