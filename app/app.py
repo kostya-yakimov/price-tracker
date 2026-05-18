@@ -11,36 +11,34 @@ st.set_page_config(
 
 st.title("🛒 Product Price Tracker")
 
-# --- Подключение к БД ---
-while True:
-    try:
-        conn = psycopg2.connect(
-            dbname=os.getenv("POSTGRES_DB"),
-            user=os.getenv("POSTGRES_USER"),
-            password=os.getenv("POSTGRES_PASSWORD"),
-            host=os.getenv("DB_HOST", "db"),
-            port="5432"
-        )
+@st.cache_resource
+def get_connection():
+    return psycopg2.connect(
+        dbname=os.getenv("POSTGRES_DB"),
+        user=os.getenv("POSTGRES_USER"),
+        password=os.getenv("POSTGRES_PASSWORD"),
+        host="db",
+        port="5432"
+    )
 
-        break
+conn = get_connection()
 
-    except Exception as e:
-        print("Waiting for PostgreSQL...")
-        print(e)
-        time.sleep(5)
+@st.cache_data(ttl=30)
+def load_data():
+    query = """
+    SELECT
+        title,
+        category,
+        price,
+        loaded_at
+    FROM product_prices
+    ORDER BY loaded_at DESC
+    LIMIT 5000
+    """
 
-# --- Загрузка данных ---
-query = """
-SELECT
-    title,
-    category,
-    price,
-    loaded_at
-FROM product_prices
-ORDER BY loaded_at DESC
-"""
+    return pd.read_sql(query, conn)
 
-df = pd.read_sql(query, conn)
+df = load_data()
 
 # =========================
 # Последние данные
@@ -91,5 +89,3 @@ chart_df = (
 )
 
 st.line_chart(chart_df)
-
-conn.close()
