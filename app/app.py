@@ -34,7 +34,7 @@ def load_data():
     LIMIT 5000
     """
 
-    return pd.read_sql(query, conn)
+    return pd.read_sql(query, get_connection())
 
 df = load_data()
 
