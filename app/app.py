@@ -2,7 +2,6 @@ import os
 import streamlit as st
 import pandas as pd
 import psycopg2
-import time
 
 st.set_page_config(
     page_title="Product Price Tracker",
@@ -11,18 +10,18 @@ st.set_page_config(
 
 st.title("🛒 Product Price Tracker")
 
-@st.cache_resource
-def get_connection():
-    return psycopg2.connect(
+@st.cache_data(ttl=30)
+def load_data():
+
+    conn = psycopg2.connect(
         dbname=os.getenv("POSTGRES_DB"),
         user=os.getenv("POSTGRES_USER"),
         password=os.getenv("POSTGRES_PASSWORD"),
         host="db",
-        port="5432"
+        port="5432",
+        connect_timeout=10
     )
 
-@st.cache_data(ttl=30)
-def load_data():
     query = """
     SELECT
         title,
@@ -34,7 +33,11 @@ def load_data():
     LIMIT 5000
     """
 
-    return pd.read_sql(query, get_connection())
+    df = pd.read_sql(query, conn)
+
+    conn.close()
+
+    return df
 
 df = load_data()
 
