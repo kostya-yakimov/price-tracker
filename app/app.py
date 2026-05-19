@@ -21,8 +21,6 @@ def get_connection():
         port="5432"
     )
 
-conn = get_connection()
-
 @st.cache_data(ttl=30)
 def load_data():
     query = """
