@@ -67,9 +67,10 @@ while True:
             
             conn.commit()
             print(f"Loaded {len(products)} products")
-
+   # перехват ошибок интернета, сети
     except requests.RequestException as req_err:
         print(f"API Error: {req_err}")
+   # перехват ошибок базы данных
     except psycopg2.Error as db_err:
         print(f"Database Error: {db_err}")
         conn.rollback()
@@ -79,3 +80,4 @@ while True:
     # --- Ждем 15 минут ---
     print("Sleeping for 15 minutes...")
     time.sleep(900)
+# Ставит скрипт на паузу на 900 секунд (15 минут). После этого цикл while начнется сначала: снова скачает данные, изменит цены и запишет их в базу.
